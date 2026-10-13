@@ -1,0 +1,54 @@
+<resources>
+    <string name="app_name">FloodRescue Net Monitor</string>
+
+    <!-- Login -->
+    <string name="login_official_notice"><b>Official Notice:</b> Access requires an administrator-approved account. Please use a secure network for sensor monitoring.</string>
+    <string name="error_invalid_email">Enter a valid email address</string>
+    <string name="error_password_required">Password is required</string>
+    <string name="error_email_before_reset">Enter your email above first, then tap Forgot Password</string>
+    <string name="error_login_failed">Login failed. Please check your email and password and try again.</string>
+    <string name="error_account_pending_verification">Your account is pending verification by a DRRM admin. Please wait for approval before logging in.</string>
+    <string name="error_reset_failed">Could not send reset email. Please try again later.</string>
+    <string name="msg_reset_email_sent">Password reset email sent to %1$s. Open it, then tap the link (or paste it here) to set a new password.</string>
+    <string name="action_have_reset_link">Already have a reset link?</string>
+
+    <!-- Reset Password -->
+    <string name="reset_password_title">Reset Password</string>
+    <string name="reset_password_instructions_link">If tapping the link in your reset email didn\'t work, paste the full link (or just the code after oobCode=) from that email below to continue here instead.</string>
+    <string name="label_reset_link">RESET LINK OR CODE</string>
+    <string name="hint_reset_link">Paste link from email</string>
+    <string name="action_verify_link">Verify Link</string>
+    <string name="error_reset_link_required">Paste the reset link or code from your email first</string>
+    <string name="error_reset_link_invalid">Could not read a reset code from that text</string>
+    <string name="error_reset_link_expired">This reset link is invalid or has expired. Request a new one from the login screen.</string>
+    <string name="msg_reset_link_verified">Link verified for %1$s. Enter your new password below.</string>
+    <string name="label_new_password">NEW PASSWORD</string>
+    <string name="label_confirm_password">CONFIRM NEW PASSWORD</string>
+    <string name="action_set_new_password">Set New Password</string>
+    <string name="msg_password_reset_success">Password updated. Please log in with your new password.</string>
+    <string name="error_reset_submit_failed">Could not update the password. Please try again.</string>
+    <string name="action_back_to_login">Back to Login</string>
+
+    <!-- Sign Up -->
+    <string name="error_full_name_required">Full name is required</string>
+    <string name="error_barangay_required">Barangay / Office is required</string>
+    <string name="error_role_required">Role / Position is required</string>
+    <string name="error_password_length">Password must be at least 8 characters</string>
+    <string name="error_password_mismatch">Passwords do not match</string>
+    <string name="error_registration_failed">Registration failed. Please try again.</string>
+    <string name="msg_account_created">Account created. Await barangay admin verification before logging in.</string>
+    <string name="error_profile_save_failed">Account creation failed. Please try again.</string>
+
+    <!-- Admin Panel -->
+    <string name="admin_title">Admin Panel</string>
+    <string name="admin_pending_header">Pending Accounts</string>
+    <string name="admin_promote_header">Promote to Admin</string>
+    <string name="admin_no_pending">No pending accounts.</string>
+    <string name="admin_no_promotable">No verified users to promote.</string>
+    <string name="admin_approve">Approve</string>
+    <string name="admin_reject">Reject</string>
+    <string name="admin_promote">Promote</string>
+    <string name="admin_go_to_dashboard">Go to Dashboard</string>
+    <string name="admin_load_failed">Could not load accounts. Please try again.</string>
+    <string name="admin_action_failed">Action failed. Please try again.</string>
+</resources>

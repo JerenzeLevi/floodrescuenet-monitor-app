@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='utf-8'?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent" android:layout_height="match_parent" android:orientation="vertical" android:background="@color/surface_light" android:fitsSystemWindows="true">
+    <TextView android:id="@+id/tvConnectionStatus" android:layout_width="match_parent" android:layout_height="wrap_content" android:padding="10dp" android:text="DEMO · Checking access…" android:textColor="@color/indigo" android:textSize="12sp" android:background="@android:color/white" />
+    <LinearLayout android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:orientation="vertical" android:paddingHorizontal="20dp" android:paddingVertical="16dp">
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical">
+            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:paddingStart="24dp" android:text="Alerts &amp; History" android:textSize="18sp" android:textStyle="bold" android:textColor="@color/text_primary" />
+            <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/ic_filter_list" android:contentDescription="Filter" />
+        </LinearLayout>
+        <HorizontalScrollView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="14dp" android:scrollbars="none">
+            <LinearLayout android:id="@+id/filterRow" android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="horizontal" />
+        </HorizontalScrollView>
+        <TextView android:id="@+id/tvEventsCount" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="16dp" android:text="RECENT EVENTS (4)" android:textSize="12sp" android:textStyle="bold" android:letterSpacing="0.05" android:textColor="@color/text_secondary" />
+        <androidx.core.widget.NestedScrollView android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:layout_marginTop="10dp">
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
+                <androidx.recyclerview.widget.RecyclerView android:id="@+id/rvAlerts" android:layout_width="match_parent" android:layout_height="wrap_content" android:nestedScrollingEnabled="false" />
+                <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:gravity="center" android:text="END OF HISTORICAL RECORDS" android:textSize="11sp" android:textColor="@color/text_secondary" android:id="@+id/tvEmptyEvents" />
+                <com.google.android.material.button.MaterialButton style="@style/Widget.MaterialComponents.Button.OutlinedButton" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="12dp" android:text="Live Monitoring Data" android:textColor="@color/indigo" app:icon="@drawable/ic_open_in_new" app:iconTint="@color/indigo" app:strokeColor="@color/indigo" app:cornerRadius="10dp" android:id="@+id/btnLiveData" />
+                <View android:layout_width="match_parent" android:layout_height="12dp" />
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
+    </LinearLayout>
+    <com.google.android.material.bottomnavigation.BottomNavigationView android:id="@+id/bottomNav" android:layout_width="match_parent" android:layout_height="wrap_content" android:background="@android:color/white" app:itemIconTint="@color/bottom_nav_item_color" app:itemTextColor="@color/bottom_nav_item_color" app:labelVisibilityMode="labeled" app:menu="@menu/bottom_nav_menu" />
+</LinearLayout>

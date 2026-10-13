@@ -1,0 +1,13 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.FloodRescueNetMonitor" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/indigo</item>
+        <item name="colorPrimaryDark">@color/indigo_dark</item>
+        <item name="colorSecondary">@color/pink_accent</item>
+        <item name="colorAccent">@color/pink_accent</item>
+        <item name="android:windowBackground">@color/surface_light</item>
+        <item name="android:textColorPrimary">@color/text_primary</item>
+    </style>
+
+    <style name="Theme.FloodRescueNetMonitor" parent="Base.Theme.FloodRescueNetMonitor" />
+</resources>

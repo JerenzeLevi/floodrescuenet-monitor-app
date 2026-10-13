@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <color name="indigo">#5B5FEA</color>
+    <color name="indigo_dark">#4347C9</color>
+    <color name="pink_accent">#E84C6B</color>
+    <color name="surface_light">#F7F7FB</color>
+    <color name="card_border">#EDEDF5</color>
+    <color name="text_primary">#1D1E2C</color>
+    <color name="text_secondary">#7B7E8C</color>
+    <color name="green_success">#1FA971</color>
+    <color name="green_success_bg">#E4F7EE</color>
+    <color name="amber_warning">#E0A526</color>
+    <color name="amber_warning_bg">#FDF3DD</color>
+    <color name="red_danger">#E23E3E</color>
+    <color name="red_danger_bg">#FCE9E9</color>
+    <color name="blue_info">#3B6EE0</color>
+    <color name="indigo_bg">#EEEEFC</color>
+
+    <color name="ad_hoc_f5f5fa">#F5F5FA</color>
+    <color name="ad_hoc_e0e0ea">#E0E0EA</color>
+    <color name="ad_hoc_f0f0fa">#F0F0FA</color>
+    <color name="ad_hoc_e0e0e0">#E0E0E0</color>
+    <color name="ad_hoc_eff0fe">#EFF0FE</color>
+    <color name="ad_hoc_f3f3f8">#F3F3F8</color>
+</resources>

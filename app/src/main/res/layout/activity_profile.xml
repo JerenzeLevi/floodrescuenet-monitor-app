@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent" android:layout_height="match_parent" android:orientation="vertical" android:background="@color/surface_light" android:fitsSystemWindows="true">
+    <TextView android:id="@+id/tvConnectionStatus" android:layout_width="match_parent" android:layout_height="wrap_content" android:padding="10dp" android:text="Checking access…" android:textColor="@color/indigo" android:textSize="12sp" android:background="@android:color/white" />
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical" android:background="@android:color/white" android:paddingHorizontal="20dp" android:paddingVertical="12dp">
+        <ImageButton android:id="@+id/btnBack" android:layout_width="36dp" android:layout_height="36dp" android:src="@drawable/ic_arrow_back" android:background="?attr/selectableItemBackgroundBorderless" android:contentDescription="Back" />
+        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:layout_marginStart="8dp" android:text="Profile" android:textSize="20sp" android:textStyle="bold" android:textColor="@color/text_primary" />
+    </LinearLayout>
+    <androidx.core.widget.NestedScrollView android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1">
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:paddingBottom="24dp">
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:gravity="center_horizontal" android:background="@color/indigo_bg" android:paddingTop="24dp" android:paddingBottom="36dp">
+                <FrameLayout android:layout_width="96dp" android:layout_height="96dp">
+                    <TextView android:id="@+id/tvProfileInitial" android:layout_width="96dp" android:layout_height="96dp" android:gravity="center" android:background="@drawable/bg_avatar_indigo" android:text="?" android:textColor="@color/indigo" android:textStyle="bold" android:textSize="36sp" />
+                    <ImageView android:layout_width="28dp" android:layout_height="28dp" android:layout_gravity="bottom|end" android:padding="3dp" android:background="@drawable/bg_badge_white_circle" android:src="@drawable/ic_verified_user" android:contentDescription="Verified account" />
+                </FrameLayout>
+                <TextView android:id="@+id/tvProfileName" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="12dp" android:text="—" android:textSize="24sp" android:textStyle="bold" android:textColor="@color/text_primary" />
+                <TextView android:id="@+id/tvProfileRole" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="2dp" android:text="—" android:textSize="14sp" android:textStyle="bold" android:textColor="@color/indigo" />
+            </LinearLayout>
+
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginTop="-24dp" android:paddingHorizontal="16dp">
+                <com.google.android.material.card.MaterialCardView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" app:cardCornerRadius="14dp" app:cardElevation="1dp" app:cardBackgroundColor="@android:color/white">
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical" android:padding="12dp">
+                        <ImageView android:layout_width="22dp" android:layout_height="22dp" android:src="@drawable/ic_apartment" android:contentDescription="@null" />
+                        <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:layout_marginStart="10dp" android:orientation="vertical">
+                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="BARANGAY / OFFICE" android:textSize="9sp" android:textStyle="bold" android:textColor="@color/text_secondary" />
+                            <TextView android:id="@+id/tvProfileOffice" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="—" android:textSize="13sp" android:textColor="@color/text_primary" android:singleLine="true" android:ellipsize="end" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+                <com.google.android.material.card.MaterialCardView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:layout_marginStart="12dp" app:cardCornerRadius="14dp" app:cardElevation="1dp" app:cardBackgroundColor="@android:color/white">
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical" android:padding="12dp">
+                        <ImageView android:layout_width="22dp" android:layout_height="22dp" android:src="@drawable/ic_email" android:contentDescription="@null" />
+                        <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:layout_marginStart="10dp" android:orientation="vertical">
+                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="EMAIL" android:textSize="9sp" android:textStyle="bold" android:textColor="@color/text_secondary" />
+                            <TextView android:id="@+id/tvProfileEmail" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="—" android:textSize="13sp" android:textColor="@color/text_primary" android:singleLine="true" android:ellipsize="end" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
+
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:paddingHorizontal="16dp">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="24dp" android:text="AUTHORITY &amp; PERMISSIONS" android:textSize="12sp" android:textStyle="bold" android:letterSpacing="0.05" android:textColor="@color/text_secondary" />
+                <com.google.android.material.card.MaterialCardView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="10dp" app:cardCornerRadius="14dp" app:cardElevation="0dp" app:strokeColor="@color/card_border" app:strokeWidth="1dp" app:cardBackgroundColor="@android:color/white">
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="16dp">
+                        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal">
+                            <ImageView android:layout_width="20dp" android:layout_height="20dp" android:src="@drawable/ic_verified_user" android:contentDescription="@null" />
+                            <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:layout_marginStart="10dp" android:orientation="vertical">
+                                <TextView android:id="@+id/tvAccessLevel" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Official Access Level" android:textSize="15sp" android:textStyle="bold" android:textColor="@color/text_primary" />
+                                <TextView android:id="@+id/tvAccessDesc" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="2dp" android:text="Monitoring and manual deployment of the rescue net." android:textSize="12sp" android:textColor="@color/text_secondary" />
+                            </LinearLayout>
+                        </LinearLayout>
+                        <com.google.android.material.chip.ChipGroup android:id="@+id/permissionChips" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="10dp" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="24dp" android:orientation="horizontal" android:gravity="center_vertical">
+                    <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="NOTIFICATION SETTINGS" android:textSize="12sp" android:textStyle="bold" android:letterSpacing="0.05" android:textColor="@color/text_secondary" />
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Saved on this device" android:textSize="10sp" android:textColor="@color/indigo" android:background="@drawable/bg_chip_filter_inactive" android:paddingHorizontal="10dp" android:paddingVertical="3dp" />
+                </LinearLayout>
+                <com.google.android.material.card.MaterialCardView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="10dp" app:cardCornerRadius="14dp" app:cardElevation="0dp" app:strokeColor="@color/card_border" app:strokeWidth="1dp" app:cardBackgroundColor="@android:color/white">
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
+                        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical" android:padding="14dp">
+                            <ImageView android:layout_width="40dp" android:layout_height="40dp" android:padding="9dp" android:background="@drawable/bg_icon_box_indigo" android:src="@drawable/ic_notifications_active" android:contentDescription="@null" />
+                            <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:layout_marginStart="12dp" android:orientation="vertical">
+                                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Push Notifications" android:textStyle="bold" android:textSize="14sp" android:textColor="@color/text_primary" />
+                                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Critical alerts &amp; status updates" android:textSize="12sp" android:textColor="@color/text_secondary" />
+                            </LinearLayout>
+                            <com.google.android.material.checkbox.MaterialCheckBox android:id="@+id/checkPush" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+                        </LinearLayout>
+                        <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/card_border" />
+                        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical" android:padding="14dp">
+                            <ImageView android:layout_width="40dp" android:layout_height="40dp" android:padding="9dp" android:background="@drawable/bg_icon_box_red" android:src="@drawable/ic_email" android:contentDescription="@null" />
+                            <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:layout_marginStart="12dp" android:orientation="vertical">
+                                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Email Digest" android:textStyle="bold" android:textSize="14sp" android:textColor="@color/text_primary" />
+                                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Daily incident report summaries" android:textSize="12sp" android:textColor="@color/text_secondary" />
+                            </LinearLayout>
+                            <com.google.android.material.checkbox.MaterialCheckBox android:id="@+id/checkEmail" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+                        </LinearLayout>
+                        <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/card_border" />
+                        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical" android:padding="14dp">
+                            <ImageView android:layout_width="40dp" android:layout_height="40dp" android:padding="9dp" android:src="@drawable/ic_call" android:contentDescription="@null" />
+                            <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:layout_marginStart="12dp" android:orientation="vertical">
+                                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="SMS Emergency Alerts" android:textStyle="bold" android:textSize="14sp" android:textColor="@color/text_primary" />
+                                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Network-offline fallback alerts" android:textSize="12sp" android:textColor="@color/text_secondary" />
+                            </LinearLayout>
+                            <com.google.android.material.checkbox.MaterialCheckBox android:id="@+id/checkSms" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="24dp" android:text="SECURITY &amp; ACCOUNT" android:textSize="12sp" android:textStyle="bold" android:letterSpacing="0.05" android:textColor="@color/text_secondary" />
+                <com.google.android.material.card.MaterialCardView android:id="@+id/rowSecurity" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="10dp" android:clickable="true" android:focusable="true" app:cardCornerRadius="12dp" app:cardElevation="0dp" app:strokeColor="@color/card_border" app:strokeWidth="1dp" app:cardBackgroundColor="@android:color/white">
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical" android:padding="14dp">
+                        <ImageView android:layout_width="22dp" android:layout_height="22dp" android:src="@drawable/ic_lock" android:contentDescription="@null" />
+                        <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:layout_marginStart="12dp" android:orientation="vertical">
+                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Security Settings" android:textStyle="bold" android:textSize="14sp" android:textColor="@color/text_primary" />
+                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Send a password reset email" android:textSize="12sp" android:textColor="@color/text_secondary" />
+                        </LinearLayout>
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="&gt;" android:textSize="18sp" android:textColor="@color/text_secondary" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+                <com.google.android.material.card.MaterialCardView android:id="@+id/rowHelp" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="10dp" android:clickable="true" android:focusable="true" app:cardCornerRadius="12dp" app:cardElevation="0dp" app:strokeColor="@color/card_border" app:strokeWidth="1dp" app:cardBackgroundColor="@android:color/white">
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical" android:padding="14dp">
+                        <ImageView android:layout_width="22dp" android:layout_height="22dp" android:src="@drawable/ic_info" android:contentDescription="@null" />
+                        <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:layout_marginStart="12dp" android:orientation="vertical">
+                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Help &amp; Support" android:textStyle="bold" android:textSize="14sp" android:textColor="@color/text_primary" />
+                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Setup guides &amp; diagnostics" android:textSize="12sp" android:textColor="@color/text_secondary" />
+                        </LinearLayout>
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="&gt;" android:textSize="18sp" android:textColor="@color/text_secondary" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+                <com.google.android.material.card.MaterialCardView android:id="@+id/rowAdmin" android:visibility="gone" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="10dp" android:clickable="true" android:focusable="true" app:cardCornerRadius="12dp" app:cardElevation="0dp" app:strokeColor="@color/card_border" app:strokeWidth="1dp" app:cardBackgroundColor="@android:color/white">
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical" android:padding="14dp">
+                        <ImageView android:layout_width="22dp" android:layout_height="22dp" android:src="@drawable/ic_badge" android:contentDescription="@null" />
+                        <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:layout_marginStart="12dp" android:orientation="vertical">
+                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Admin Panel" android:textStyle="bold" android:textSize="14sp" android:textColor="@color/text_primary" />
+                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Approve and manage accounts" android:textSize="12sp" android:textColor="@color/text_secondary" />
+                        </LinearLayout>
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="&gt;" android:textSize="18sp" android:textColor="@color/text_secondary" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+                <TextView android:id="@+id/btnSignOut" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_gravity="center_horizontal" android:layout_marginTop="24dp" android:minHeight="48dp" android:gravity="center" android:paddingHorizontal="16dp" android:text="Sign Out" android:textSize="15sp" android:textStyle="bold" android:textColor="@color/red_danger" android:clickable="true" android:focusable="true" />
+            </LinearLayout>
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+    <com.google.android.material.bottomnavigation.BottomNavigationView android:id="@+id/bottomNav" android:layout_width="match_parent" android:layout_height="wrap_content" android:background="@android:color/white" app:itemIconTint="@color/bottom_nav_item_color" app:itemTextColor="@color/bottom_nav_item_color" app:labelVisibilityMode="labeled" app:menu="@menu/bottom_nav_menu" />
+</LinearLayout>

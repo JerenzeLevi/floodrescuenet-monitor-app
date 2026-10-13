@@ -1,0 +1,244 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "users": {
+      "$uid": {
+        ".read": "auth != null && (auth.uid == $uid || root.child('users').child(auth.uid).child('verified').val() == true && (root.child('users').child(auth.uid).child('role').val() == 'superadmin' || (root.child('users').child(auth.uid).child('role').val() == 'admin' && root.child('users').child(auth.uid).child('barangay').val() == data.child('barangay').val())))",
+        ".write": "auth != null && ((auth.uid == $uid && !data.exists() && newData.exists() && newData.child('verified').val() == false && newData.child('role').val() == 'user') || (root.child('users').child(auth.uid).child('verified').val() == true && root.child('users').child(auth.uid).child('role').val() == 'superadmin' && data.exists()) || (root.child('users').child(auth.uid).child('verified').val() == true && root.child('users').child(auth.uid).child('role').val() == 'admin' && data.exists() && data.child('role').val() == 'user' && data.child('barangay').val() == root.child('users').child(auth.uid).child('barangay').val() && (!newData.exists() || (newData.child('role').val() == 'user' && newData.child('barangay').val() == data.child('barangay').val()))))",
+        ".validate": "newData.hasChildren(['fullName','barangay','role','email','verified','createdAt'])",
+        "fullName": {
+          ".validate": "newData.isString() && newData.val().length <= 100"
+        },
+        "barangay": {
+          ".validate": "newData.isString() && newData.val().length <= 100"
+        },
+        "role": {
+          ".validate": "newData.isString() && (newData.val() == 'user' || newData.val() == 'admin' || newData.val() == 'superadmin')"
+        },
+        "email": {
+          ".validate": "newData.isString() && newData.val() == auth.token.email"
+        },
+        "verified": {
+          ".validate": "newData.isBoolean()"
+        },
+        "verifiedBy": {
+          ".validate": "newData.isString() && newData.val().length <= 128"
+        },
+        "verifiedAt": {
+          ".validate": "newData.isNumber() && newData.val() > 0 && newData.val() <= now + 5000"
+        },
+        "createdAt": {
+          ".validate": "newData.isNumber() && newData.val() > 0 && newData.val() <= now + 5000"
+        },
+        "$other": {
+          ".validate": false
+        }
+      }
+    },
+    "config": {
+      "superadmins": {
+        "$uid": {
+          ".read": "auth != null && auth.uid == $uid",
+          ".write": false
+        }
+      }
+    },
+    "demoSessions": {
+      "$uid": {
+        ".read": "auth != null && auth.uid == $uid && root.child('users').child($uid).child('verified').val() == true",
+        "telemetry": {
+          ".write": "auth != null && auth.uid == $uid && root.child('users').child($uid).child('verified').val() == true && newData.exists()",
+          ".validate": "newData.hasChildren(['schemaVersion','source','waterCm','warningCm','dangerCm','net','mode','updatedAt']) && newData.child('warningCm').val() < newData.child('dangerCm').val()",
+          "schemaVersion": {
+            ".validate": "newData.val() == 1"
+          },
+          "source": {
+            ".validate": "newData.val() == 'simulation'"
+          },
+          "waterCm": {
+            ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 20"
+          },
+          "warningCm": {
+            ".validate": "newData.isNumber() && newData.val() >= 0.1 && newData.val() <= 19.9"
+          },
+          "dangerCm": {
+            ".validate": "newData.isNumber() && newData.val() >= 0.2 && newData.val() <= 20"
+          },
+          "net": {
+            ".validate": "newData.val() == 'ready' || newData.val() == 'deploying' || newData.val() == 'deployed'"
+          },
+          "mode": {
+            ".validate": "newData.val() == 'automatic' || newData.val() == 'manual'"
+          },
+          "updatedAt": {
+            ".validate": "newData.isNumber() && newData.val() > 0 && newData.val() <= now + 5000"
+          },
+          "lastActivityAt": {
+            ".validate": "newData.isNumber() && newData.val() > 0 && newData.val() <= now + 5000"
+          },
+          "batteryPercent": {
+            ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 100"
+          },
+          "latencyMs": {
+            ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 60000"
+          },
+          "coreTempC": {
+            ".validate": "newData.isNumber() && newData.val() >= -50 && newData.val() <= 150"
+          },
+          "signal": {
+            ".validate": "newData.isString() && newData.val().length <= 40"
+          },
+          "rain": {
+            ".validate": "newData.isString() && newData.val().length <= 40"
+          },
+          "alignment": {
+            ".validate": "newData.isString() && newData.val().length <= 40"
+          },
+          "$other": {
+            ".validate": false
+          }
+        },
+        "command": {
+          ".write": "auth != null && auth.uid == $uid && root.child('users').child($uid).child('verified').val() == true && newData.exists() && (((!data.exists() || data.child('expiresAt').val() <= now || data.child('status').val() == 'completed' || data.child('status').val() == 'failed') && newData.child('id').val() != data.child('id').val() && newData.child('status').val() == 'pending' && newData.child('createdAt').val() >= now - 5000 && newData.child('expiresAt').val() > now && newData.child('expiresAt').val() <= now + 35000) || (newData.child('id').val() == data.child('id').val() && newData.child('type').val() == data.child('type').val() && newData.child('requestedBy').val() == data.child('requestedBy').val() && newData.child('target').val() == data.child('target').val() && newData.child('location').val() == data.child('location').val() && newData.child('mode').val() == data.child('mode').val() && newData.child('createdAt').val() == data.child('createdAt').val() && newData.child('expiresAt').val() == data.child('expiresAt').val() && data.child('expiresAt').val() > now && (data.child('status').val() == 'pending' || data.child('status').val() == 'accepted') && (newData.child('status').val() == 'accepted' || newData.child('status').val() == 'completed' || newData.child('status').val() == 'failed')))",
+          ".validate": "newData.hasChildren(['id','requestedBy','target','type','status','location','mode','createdAt','expiresAt']) && newData.child('expiresAt').val() > newData.child('createdAt').val() && newData.child('expiresAt').val() - newData.child('createdAt').val() <= 35000",
+          "id": {
+            ".validate": "newData.isString() && newData.val().length >= 16 && newData.val().length <= 80"
+          },
+          "requestedBy": {
+            ".validate": "newData.val() == $uid"
+          },
+          "target": {
+            ".validate": "newData.val() == 'simulation'"
+          },
+          "type": {
+            ".validate": "newData.val() == 'DEPLOY' || newData.val() == 'SET_MODE' || newData.val() == 'DIAGNOSTIC'"
+          },
+          "status": {
+            ".validate": "newData.val() == 'pending' || newData.val() == 'accepted' || newData.val() == 'completed' || newData.val() == 'failed'"
+          },
+          "location": {
+            ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 80"
+          },
+          "mode": {
+            ".validate": "newData.val() == 'automatic' || newData.val() == 'manual'"
+          },
+          "createdAt": {
+            ".validate": "newData.isNumber() && newData.val() > 0 && newData.val() <= now + 5000"
+          },
+          "expiresAt": {
+            ".validate": "newData.isNumber()"
+          },
+          "acknowledgedAt": {
+            ".validate": "newData.isNumber() && newData.val() > 0 && newData.val() <= now + 5000"
+          },
+          "message": {
+            ".validate": "newData.isString() && newData.val().length <= 240"
+          },
+          "$other": {
+            ".validate": false
+          }
+        },
+        "events": {
+          ".indexOn": [
+            "timestamp"
+          ],
+          "$id": {
+            ".write": "auth != null && auth.uid == $uid && root.child('users').child($uid).child('verified').val() == true && newData.exists()",
+            ".validate": "newData.hasChildren([\"timestamp\", \"severity\", \"title\", \"description\", \"category\"])",
+            "timestamp": {
+              ".validate": "newData.isNumber() && newData.val() > 0 && newData.val() <= now + 5000"
+            },
+            "severity": {
+              ".validate": "newData.isString() && newData.val().length <= 20"
+            },
+            "title": {
+              ".validate": "newData.isString() && newData.val().length <= 100"
+            },
+            "description": {
+              ".validate": "newData.isString() && newData.val().length <= 500"
+            },
+            "category": {
+              ".validate": "newData.isString() && newData.val().length <= 40"
+            },
+            "type": {
+              ".validate": "newData.isString() && newData.val().length <= 30"
+            },
+            "$other": {
+              ".validate": false
+            }
+          }
+        },
+        "readings": {
+          ".indexOn": [
+            "timestamp"
+          ],
+          "$id": {
+            ".write": "auth != null && auth.uid == $uid && root.child('users').child($uid).child('verified').val() == true && newData.exists()",
+            ".validate": "newData.hasChildren([\"timestamp\", \"waterCm\"])",
+            "timestamp": {
+              ".validate": "newData.isNumber() && newData.val() > 0 && newData.val() <= now + 5000"
+            },
+            "waterCm": {
+              ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 20"
+            },
+            "trend": {
+              ".validate": "newData.isString() && newData.val().length <= 20"
+            },
+            "$other": {
+              ".validate": false
+            }
+          }
+        },
+        "deployments": {
+          ".indexOn": [
+            "timestamp"
+          ],
+          "$id": {
+            ".write": "auth != null && auth.uid == $uid && root.child('users').child($uid).child('verified').val() == true && newData.exists()",
+            ".validate": "newData.hasChildren([\"timestamp\", \"location\", \"initiator\", \"status\"])",
+            "timestamp": {
+              ".validate": "newData.isNumber() && newData.val() > 0 && newData.val() <= now + 5000"
+            },
+            "location": {
+              ".validate": "newData.isString() && newData.val().length <= 80"
+            },
+            "initiator": {
+              ".validate": "newData.isString() && newData.val().length <= 80"
+            },
+            "status": {
+              ".validate": "newData.val() == 'Success' || newData.val() == 'Failed' || newData.val() == 'Pending'"
+            },
+            "cycleMs": {
+              ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 60000"
+            },
+            "error": {
+              ".validate": "newData.isString() && newData.val().length <= 500"
+            },
+            "$other": {
+              ".validate": false
+            }
+          }
+        },
+        "contacts": {
+          "$id": {
+            ".write": "auth != null && auth.uid == $uid && root.child('users').child($uid).child('verified').val() == true && newData.exists()",
+            ".validate": "newData.hasChildren(['name','number'])",
+            "name": {
+              ".validate": "newData.isString() && newData.val().length <= 80"
+            },
+            "subtitle": {
+              ".validate": "newData.isString() && newData.val().length <= 160"
+            },
+            "number": {
+              ".validate": "newData.isString() && newData.val().matches(/^[+0-9() -]{3,25}$/)"
+            },
+            "$other": {
+              ".validate": false
+            }
+          }
+        }
+      }
+    }
+  }
+}

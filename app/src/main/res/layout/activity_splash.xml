@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='utf-8'?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent" android:layout_height="match_parent" android:background="@android:color/white" android:orientation="vertical" android:gravity="center_horizontal" android:paddingHorizontal="24dp" android:paddingTop="140dp" android:fitsSystemWindows="true">
+    <ImageView android:layout_width="96dp" android:layout_height="96dp" android:src="@drawable/app_logo" android:scaleType="fitCenter" android:contentDescription="@null" />
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="24dp" android:text="FloodRescue Net Monitor" android:textSize="24sp" android:textStyle="bold" android:textColor="@color/text_primary" />
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="4dp" android:text="FLOOD NET MONITOR" android:textSize="12sp" android:letterSpacing="0.15" android:textColor="@color/text_secondary" />
+    <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="64dp" android:orientation="horizontal" android:gravity="center_vertical" android:background="@drawable/bg_rounded_light_pill" android:paddingHorizontal="20dp" android:paddingVertical="10dp">
+        <ImageView android:layout_width="16dp" android:layout_height="16dp" android:src="@drawable/ic_wifi" android:contentDescription="@null" />
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="6dp" android:text="CONNECTING TO DEMO SESSION..." android:textSize="12sp" android:textStyle="bold" android:letterSpacing="0.05" android:textColor="@color/text_primary" />
+    </LinearLayout>
+    <ProgressBar android:layout_width="36dp" android:layout_height="36dp" android:layout_marginTop="32dp" android:indeterminateTint="@color/indigo" />
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="16dp" android:text="Initializing session..." android:textStyle="bold" android:textColor="@color/text_primary" />
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="4dp" android:text="Estimated time: 2-3s" android:textSize="12sp" android:textColor="@color/text_secondary" />
+    <View android:layout_width="0dp" android:layout_height="1dp" android:layout_marginTop="48dp" android:layout_weight="0" android:background="@color/card_border" />
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="20dp" android:text="DRRM SYSTEM V1.0  ▪  OFFICIAL USE ONLY" android:textSize="11sp" android:letterSpacing="0.08" android:textStyle="bold" android:textColor="@color/text_secondary" />
+</LinearLayout>
