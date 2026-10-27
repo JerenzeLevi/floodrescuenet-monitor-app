@@ -106,7 +106,7 @@ public class SignUpActivity extends AppCompatActivity {
         Map<String, Object> profile = new HashMap<>();
         profile.put("fullName", fullName);
         profile.put("barangay", barangay);
-        profile.put("role", role);
+        profile.put("position", role);
         profile.put("email", email);
         profile.put("role", "user");
         profile.put("verified", false);

@@ -6,7 +6,7 @@
             <ImageButton android:id="@+id/btnBack" android:layout_width="36dp" android:layout_height="36dp" android:src="@drawable/ic_arrow_back" android:background="?attr/selectableItemBackgroundBorderless" android:contentDescription="Back" />
             <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="vertical">
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Recent Deployments" android:textSize="17sp" android:textStyle="bold" android:textColor="@color/text_primary" />
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Your demo session records" android:textSize="12sp" android:textColor="@color/text_secondary" />
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Selected source records" android:textSize="12sp" android:textColor="@color/text_secondary" />
             </LinearLayout>
         </LinearLayout>
         <ImageView android:layout_width="24dp" android:layout_height="24dp" android:src="@drawable/ic_filter_list" android:contentDescription="Filter" />
@@ -14,7 +14,7 @@
     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="16dp" android:orientation="horizontal" android:gravity="center_vertical">
         <ImageView android:layout_width="16dp" android:layout_height="16dp" android:src="@drawable/ic_grid_view" android:contentDescription="@null" />
         <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:layout_marginStart="6dp" android:text="Activity Summary" android:textStyle="bold" android:textSize="15sp" android:textColor="@color/text_primary" />
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Loaded records (up to 100)" android:textSize="12sp" android:textColor="@color/text_secondary" android:id="@+id/tvPeriod" />
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Today · PHT" android:textSize="12sp" android:textColor="@color/text_secondary" android:id="@+id/tvPeriod" />
     </LinearLayout>
     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="10dp" android:orientation="horizontal">
         <include layout="@layout/summary_card" android:id="@+id/summaryTotal" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" />
@@ -27,8 +27,9 @@
     </LinearLayout>
     <androidx.core.widget.NestedScrollView android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:layout_marginTop="10dp">
         <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
+            <Button android:id="@+id/btnFullDeploymentHistory" android:layout_width="match_parent" android:layout_height="wrap_content" android:minHeight="48dp" android:text="Browse all deployment history" />
             <androidx.recyclerview.widget.RecyclerView android:id="@+id/rvDeployments" android:layout_width="match_parent" android:layout_height="wrap_content" android:nestedScrollingEnabled="false" />
-            <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginVertical="12dp" android:gravity="center" android:textStyle="italic" android:text="Latest 100 demo deployment records. Automatic cloud archiving is not enabled." android:textSize="12sp" android:textColor="@color/text_secondary" />
+            <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginVertical="12dp" android:gravity="center" android:textStyle="italic" android:text="Latest 100 deployment records. Older records appear in Browse all deployment history → Open cloud archive when the archive service is deployed." android:textSize="12sp" android:textColor="@color/text_secondary" />
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 </LinearLayout>

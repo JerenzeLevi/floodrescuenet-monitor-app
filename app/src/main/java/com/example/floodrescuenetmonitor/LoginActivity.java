@@ -83,6 +83,7 @@ public class LoginActivity extends AppCompatActivity {
                 })
                 .addOnFailureListener(e -> {
                     if (isFinishing() || isDestroyed()) return;
+                    com.example.floodrescuenetmonitor.data.SecurityAudit.record(this,"SIGN_IN_FAILED");
                     btnLogin.setEnabled(true);
                     Toast.makeText(LoginActivity.this,
                             getString(R.string.error_login_failed),
@@ -97,6 +98,7 @@ public class LoginActivity extends AppCompatActivity {
                     public void onDataChange(DataSnapshot snapshot) {
                         if (isFinishing() || isDestroyed()) return;
                         if (!snapshot.exists()) {
+                            com.example.floodrescuenetmonitor.data.SecurityAudit.record(LoginActivity.this,"PROFILE_MISSING");
                             // No profile row for this auth uid — don't distinguish this
                             // from a bad password in the UI, same generic failure message.
                             btnLogin.setEnabled(true);
@@ -108,6 +110,7 @@ public class LoginActivity extends AppCompatActivity {
                         }
                         boolean verified = Boolean.TRUE.equals(snapshot.child("verified").getValue());
                         if (!verified) {
+                            com.example.floodrescuenetmonitor.data.SecurityAudit.record(LoginActivity.this,"UNAPPROVED_ACCESS_BLOCKED");
                             btnLogin.setEnabled(true);
                             auth.signOut();
                             Toast.makeText(LoginActivity.this,
@@ -115,6 +118,7 @@ public class LoginActivity extends AppCompatActivity {
                                     Toast.LENGTH_LONG).show();
                             return;
                         }
+                        com.example.floodrescuenetmonitor.data.SecurityAudit.record(LoginActivity.this,"SIGN_IN_APPROVED");
                         String role = snapshot.child("role").getValue(String.class);
                         if ("admin".equals(role) || "superadmin".equals(role)) {
                             goToAdmin();

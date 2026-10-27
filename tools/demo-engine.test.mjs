@@ -68,3 +68,24 @@ test('a pending request from before restart is failed and never executed by the 
   e.discardPrevious(c,NOW);assert.equal(e.accept(c,'alice',NOW+10),false);
   assert.equal(e.net,'ready');assert.equal(e.drain().find(r=>r.path==='command').value.status,'failed');
 });
+
+test('configured duration controls completion and commanded power is reported',()=>{
+  const e=new DemoEngine({mode:'manual'},NOW);e.drain();
+  e.accept(command({durationMs:2000,thrustPercent:40}),'alice',NOW);
+  assert.equal(e.telemetry(NOW).motorPowerPercent,40);
+  e.tick(NOW+1999);assert.equal(e.net,'deploying');e.tick(NOW+2000);assert.equal(e.net,'deployed');
+  const log=e.drain().find(r=>r.path.startsWith('deployments/')).value;
+  assert.equal(log.cycleMs,2000);assert.equal(log.thrustPercent,40);assert.equal(log.unitId,'SIM-01');assert.equal(e.telemetry(NOW+2000).motorPowerPercent,0);
+});
+test('unsafe configuration fails before simulated actuation',()=>{
+  for(const fields of [{durationMs:0},{durationMs:10001},{durationMs:1.5},{thrustPercent:0},{thrustPercent:101},{thrustPercent:'50'}]) {
+    const e=new DemoEngine({mode:'manual'},NOW);e.drain();e.accept(command(fields),'alice',NOW);
+    assert.equal(e.net,'ready');assert.equal(e.drain().find(r=>r.path==='command').value.status,'failed');
+  }
+});
+test('latest diagnostic is retained separately from the rolling event list',()=>{
+  const e=new DemoEngine({mode:'manual'},NOW);e.drain();e.accept(command({type:'DIAGNOSTIC'}),'alice',NOW);
+  const records=e.drain();const diagnostic=records.find(r=>r.path==='diagnostic').value;
+  assert.equal(diagnostic.type,'DIAGNOSTIC');assert.equal(diagnostic.timestamp,NOW);assert.equal(diagnostic.resolution,'Passed');
+  assert.match(diagnostic.description,/No sensor or motor self-test/);
+});

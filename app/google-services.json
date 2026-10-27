@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "391860897005",
+    "firebase_url": "https://floodrescue-app-default-rtdb.firebaseio.com",
+    "project_id": "floodrescue-app",
+    "storage_bucket": "floodrescue-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:391860897005:android:088a2b1a3181addb78b8e4",
+        "android_client_info": {
+          "package_name": "com.example.floodrescuenetmonitor"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAHsvEMtx3L2FVotbCYE5lm_lsJ7yUUG0A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

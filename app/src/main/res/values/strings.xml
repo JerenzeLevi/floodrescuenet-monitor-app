@@ -2,7 +2,7 @@
     <string name="app_name">FloodRescue Net Monitor</string>
 
     <!-- Login -->
-    <string name="login_official_notice"><b>Official Notice:</b> Access requires an administrator-approved account. Please use a secure network for sensor monitoring.</string>
+    <string name="login_official_notice"><b>Official Notice:</b> Access requires an administrator-approved account. Sign-in attempts are recorded on this phone; passwords are never logged.</string>
     <string name="error_invalid_email">Enter a valid email address</string>
     <string name="error_password_required">Password is required</string>
     <string name="error_email_before_reset">Enter your email above first, then tap Forgot Password</string>

@@ -22,22 +22,29 @@ public class LiveMonitoringActivity extends MonitorActivity {
         findViewById(R.id.btnBack).setOnClickListener(v -> finish());
         ((WaterLevelGauge)findViewById(R.id.waterGauge)).setFilled(true);
         ((RecyclerView)findViewById(R.id.rvActivity)).setLayoutManager(new LinearLayoutManager(this));
-        for(int id:new int[]{R.id.tvHistory,R.id.tvFullLogs}) findViewById(id).setOnClickListener(v -> startActivity(new Intent(this,AlertsHistoryActivity.class)));
+        findViewById(R.id.tvHistory).setOnClickListener(v -> startActivity(new Intent(this,AlertsHistoryActivity.class)));
+        findViewById(R.id.tvFullLogs).setOnClickListener(v -> startActivity(new Intent(this,HistoryBrowserActivity.class).putExtra("kind","readings")));
         findViewById(R.id.btnDiagnostic).setOnClickListener(v -> {
             if(repository == null) return;
-            sending=true;onMonitorState(state);
-            repository.request("DIAGNOSTIC","Tabletop demo",state.mode(),(ok,message)->{sending=false;message(message);onMonitorState(state);});
+            if(state.device())new androidx.appcompat.app.AlertDialog.Builder(this).setTitle("Run hardware diagnostic?")
+                .setMessage("This briefly drives the motor forward and back. Clear the mechanism and check emergency shutdown before continuing.")
+                .setPositiveButton("Run diagnostic",(d,w)->runDiagnostic()).setNegativeButton("Cancel",null).show();
+            else runDiagnostic();
         });
         BottomNavHelper.setup(this,findViewById(R.id.bottomNav),BottomNavHelper.Tab.LIVE);
+    }
+    private void runDiagnostic(){
+        if(repository==null)return;sending=true;onMonitorState(state);
+        repository.request("DIAGNOSTIC",state.device()?"ESP32 node":"Tabletop demo",state.mode(),(ok,message)->{sending=false;message(message);onMonitorState(state);});
     }
     private void label(int id,String value) { ((TextView)findViewById(id)).setText(value); }
     @Override protected void onMonitorState(MonitorState s) {
         label(R.id.tvWaterCm,s.valid()?String.format(Locale.getDefault(),"%.1f",s.water()):"—");
         label(R.id.tvUpdatedAt,date(s.updatedAt()));
-        label(R.id.tvSensorStatus,"SIMULATED TELEMETRY");
-        label(R.id.tvTrend,s.fresh()&&s.connected?s.trend():"NO LIVE TREND");label(R.id.tvTrendSource,"DEMO");
+        label(R.id.tvSensorStatus,s.device()?"DEVICE TELEMETRY":"SIMULATED TELEMETRY");
+        label(R.id.tvTrend,s.fresh()&&s.connected?s.trend():"NO LIVE TREND");label(R.id.tvTrendSource,s.sourceLabel());
         label(R.id.tvNetState,s.valid()?s.net().toUpperCase(Locale.ROOT):"UNKNOWN");
-        label(R.id.tvNetActivity,date(time(s.telemetry,"lastActivityAt")));
+        label(R.id.tvNetActivity,date(time(s.telemetry,"lastActivityAt"))+" · "+text(s.telemetry,"positionFeedback",s.device()?"Feedback not reported":"simulation"));
         label(R.id.tvCommandStatus,s.commandText());
         String tier=s.fresh()&&s.connected?s.level():"UNKNOWN";
         int color="DANGER".equals(tier)?R.color.red_danger:"WARNING".equals(tier)?R.color.amber_warning:"NORMAL".equals(tier)?R.color.green_success:R.color.text_secondary;
@@ -45,7 +52,7 @@ public class LiveMonitoringActivity extends MonitorActivity {
         ((WaterLevelGauge)findViewById(R.id.waterGauge)).setLevel(s.valid()?s.water():null,tier);
         boolean live=s.fresh()&&s.connected;
         TextView livePill=findViewById(R.id.pillLive);
-        livePill.setBackground(null);livePill.setPadding(0,0,0,0);livePill.setText(live?"● DEMO LIVE":"NO LIVE DATA");
+        livePill.setBackground(null);livePill.setPadding(0,0,0,0);livePill.setText(live?"● "+s.sourceLabel()+" LIVE":"NO LIVE DATA");
         livePill.setTextColor(getColor(live?R.color.red_danger:R.color.text_secondary));
         TextView trend=findViewById(R.id.tvTrend);
         String trendText=trend.getText().toString();
@@ -54,7 +61,7 @@ public class LiveMonitoringActivity extends MonitorActivity {
         bindChip(R.id.chipBattery,R.drawable.ic_battery_full,"BATTERY",reading(number(s.telemetry,"batteryPercent"),"%"));
         bindChip(R.id.chipRain,R.drawable.ic_umbrella,"RAIN",text(s.telemetry,"rain","Not reported"));
         findViewById(R.id.warningBanner).setVisibility("WARNING".equals(tier)||"DANGER".equals(tier)?View.VISIBLE:View.GONE);
-        label(R.id.tvWarningTitle,tier+" · simulated water level");
+        label(R.id.tvWarningTitle,tier+" · "+(s.device()?"device":"simulated")+" water level");
         label(R.id.tvWarningDetail,"Warning ≥ "+s.warning()+" cm; danger ≥ "+s.danger()+" cm.");
         findViewById(R.id.btnDiagnostic).setEnabled(!sending&&repository!=null&&s.canRequest());
         if(previousReadings!=s.readings) {

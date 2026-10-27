@@ -18,7 +18,7 @@ public final class UiData {
             String status = text(row,"status","Pending");
             if (!java.util.Arrays.asList("Success","Failed","Pending").contains(status)) status = "Pending";
             Double cycle = number(row,"cycleMs");
-            items.add(new DeploymentLog(text(row,"location","Tabletop demo"), date(time(row,"timestamp")), text(row,"initiator","Unknown"), status, "SIM-01", cycle == null ? "" : reading(cycle / 1000," s"), text(row,"error","")));
+            items.add(new DeploymentLog(text(row,"location","Tabletop demo"), date(time(row,"timestamp")), text(row,"initiator","Unknown"), status, text(row,"unitId","Not reported"), cycle == null ? "" : reading(cycle / 1000," s"), text(row,"error","")));
         }
         return items;
     }

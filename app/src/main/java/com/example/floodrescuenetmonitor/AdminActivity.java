@@ -26,7 +26,9 @@ public class AdminActivity extends AppCompatActivity {
 
     private FirebaseAuth auth;
     private DatabaseReference usersRef;
-    private ValueEventListener usersListener;
+    private ValueEventListener usersListener, selfListener;
+    private com.google.firebase.database.Query usersQuery;
+    private boolean active;
 
     private String myUid;
     private String myRole;
@@ -61,49 +63,30 @@ public class AdminActivity extends AppCompatActivity {
                 startActivity(new Intent(this, DashboardActivity.class)));
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        usersListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (isFinishing() || isDestroyed()) return;
-                DataSnapshot me = snapshot.child(myUid);
-                myRole = me.child("role").getValue(String.class);
-                myBarangay = me.child("barangay").getValue(String.class);
-
-                // A non-admin reaching this screen (e.g. stale deep link) has no
-                // business here, regardless of what LoginActivity intended.
-                if (!"admin".equals(myRole) && !"superadmin".equals(myRole)) {
-                    goToDashboard();
-                    return;
-                }
-
-                boolean isSuperAdmin = "superadmin".equals(myRole);
-                tvAdminScope.setText(isSuperAdmin
-                        ? "Scope: all barangays"
-                        : "Scope: " + (myBarangay == null ? "your barangay" : myBarangay));
-                findViewById(R.id.promoteSection).setVisibility(isSuperAdmin ? android.view.View.VISIBLE : android.view.View.GONE);
-
-                renderPending(snapshot, isSuperAdmin);
-                if (isSuperAdmin) {
-                    renderPromotable(snapshot);
-                }
+    @Override protected void onStart() {
+        super.onStart();if(usersRef==null)return;active=true;
+        selfListener=new ValueEventListener(){
+            @Override public void onDataChange(@NonNull DataSnapshot me){
+                if(!active)return;
+                if(usersQuery!=null && usersListener!=null)usersQuery.removeEventListener(usersListener);
+                myRole=me.child("role").getValue(String.class);myBarangay=me.child("barangay").getValue(String.class);
+                if(!Boolean.TRUE.equals(me.child("verified").getValue()) || !("admin".equals(myRole)||"superadmin".equals(myRole))){goToDashboard();return;}
+                boolean all="superadmin".equals(myRole);
+                tvAdminScope.setText(all?"Scope: all barangays":"Scope: "+myBarangay);
+                findViewById(R.id.promoteSection).setVisibility(all?android.view.View.VISIBLE:android.view.View.GONE);
+                usersQuery=all?usersRef:usersRef.orderByChild("barangay").equalTo(myBarangay);
+                usersListener=new ValueEventListener(){
+                    @Override public void onDataChange(@NonNull DataSnapshot snapshot){if(!active)return;renderPending(snapshot,all);if(all)renderPromotable(snapshot);}
+                    @Override public void onCancelled(@NonNull DatabaseError error){if(active)showActionFailed();}
+                };usersQuery.addValueEventListener(usersListener);
             }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                if (isFinishing() || isDestroyed()) return;
-                Toast.makeText(AdminActivity.this, R.string.admin_load_failed, Toast.LENGTH_LONG).show();
-            }
-        };
-        usersRef.addValueEventListener(usersListener);
+            @Override public void onCancelled(@NonNull DatabaseError error){if(active){showActionFailed();goToLogin();}}
+        };usersRef.child(myUid).addValueEventListener(selfListener);
     }
-
-    @Override
-    protected void onStop() {
-        if (usersListener != null) usersRef.removeEventListener(usersListener);
-        usersListener = null;
+    @Override protected void onStop(){
+        active=false;
+        if(usersQuery!=null && usersListener!=null)usersQuery.removeEventListener(usersListener);
+        if(usersRef!=null && selfListener!=null)usersRef.child(myUid).removeEventListener(selfListener);
         super.onStop();
     }
 

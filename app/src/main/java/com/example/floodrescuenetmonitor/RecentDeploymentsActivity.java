@@ -16,14 +16,16 @@ public class RecentDeploymentsActivity extends MonitorActivity {
         findViewById(R.id.btnBack).setOnClickListener(v->finish());
         ((RecyclerView)findViewById(R.id.rvDeployments)).setLayoutManager(new LinearLayoutManager(this));
         findViewById(R.id.tvRefresh).setOnClickListener(v->recreate());
+        findViewById(R.id.btnFullDeploymentHistory).setOnClickListener(v->startActivity(new android.content.Intent(this,HistoryBrowserActivity.class).putExtra("kind","deployments")));
     }
     @Override protected void onMonitorState(MonitorState s) {
-        if(previousDeployments==s.deployments)return;
         previousDeployments=s.deployments;List<DeploymentLog> logs=UiData.deployments(s.deployments);
         int success=0,failed=0;
-        for(DeploymentLog log:logs){if("Success".equals(log.status))success++;if("Failed".equals(log.status))failed++;}
-        bindSummary(R.id.summaryTotal,"TOTAL",logs.size());bindSummary(R.id.summarySuccess,"SUCCESS",success);bindSummary(R.id.summaryFailed,"FAILED",failed);
-        ((TextView)findViewById(R.id.tvPeriod)).setText(logs.isEmpty()?"No deployments recorded":"Loaded records (up to 100)");
+        List<DeploymentLog> today=UiData.deployments(s.todayDeployments);
+        for(DeploymentLog log:today){if("Success".equals(log.status))success++;if("Failed".equals(log.status))failed++;}
+        bindSummary(R.id.summaryTotal,"TOTAL",today.size());bindSummary(R.id.summarySuccess,"SUCCESS",success);bindSummary(R.id.summaryFailed,"FAILED",failed);
+        ((TextView)findViewById(R.id.tvPeriod)).setText(s.todayLoaded?"Today · PHT":"Loading today’s totals…");
+        if(!s.todayLoaded) { for(int id:new int[]{R.id.summaryTotal,R.id.summarySuccess,R.id.summaryFailed}) ((TextView)findViewById(id).findViewById(R.id.tvValue)).setText("—"); }
         ((RecyclerView)findViewById(R.id.rvDeployments)).setAdapter(new DeploymentLogAdapter(logs));
     }
     private void bindSummary(int id,String label,int number) {

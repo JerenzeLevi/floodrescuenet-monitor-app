@@ -118,6 +118,7 @@
                         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="&gt;" android:textSize="18sp" android:textColor="@color/text_secondary" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
+                <Button android:id="@+id/btnDataSource" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Choose monitoring source" android:layout_marginTop="16dp" />
                 <TextView android:id="@+id/btnSignOut" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_gravity="center_horizontal" android:layout_marginTop="24dp" android:minHeight="48dp" android:gravity="center" android:paddingHorizontal="16dp" android:text="Sign Out" android:textSize="15sp" android:textStyle="bold" android:textColor="@color/red_danger" android:clickable="true" android:focusable="true" />
             </LinearLayout>
         </LinearLayout>

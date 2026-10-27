@@ -28,6 +28,7 @@ public class AlertsHistoryActivity extends MonitorActivity {
         }
         findViewById(R.id.btnLiveData).setOnClickListener(v->startActivity(new Intent(this,LiveMonitoringActivity.class)));
         BottomNavHelper.setup(this,findViewById(R.id.bottomNav),BottomNavHelper.Tab.ALERTS);
+        findViewById(R.id.btnFullEventHistory).setOnClickListener(v->startActivity(new Intent(this,HistoryBrowserActivity.class).putExtra("kind","events")));
         renderFilter();
     }
     @Override protected void onSaveInstanceState(Bundle out){out.putString("filter",filter);super.onSaveInstanceState(out);}
@@ -37,7 +38,7 @@ public class AlertsHistoryActivity extends MonitorActivity {
     private void renderFilter() {
         adapter.filter(filter);
         ((TextView)findViewById(R.id.tvEventsCount)).setText("RECENT EVENTS ("+adapter.getVisibleCount()+")");
-        ((TextView)findViewById(R.id.tvEmptyEvents)).setText(adapter.getVisibleCount()==0?"No events match this filter":"Latest matching events from up to 100 loaded records");
+        ((TextView)findViewById(R.id.tvEmptyEvents)).setText(adapter.getVisibleCount()==0?"No events match this filter":"Latest matching events (up to 100 recent records)");
         LinearLayout row=findViewById(R.id.filterRow);
         for(int i=0;i<row.getChildCount();i++) {
             TextView chip=(TextView)row.getChildAt(i);boolean selected=filter.contentEquals(chip.getText());

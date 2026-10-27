@@ -30,16 +30,16 @@
             </LinearLayout>
             <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="14dp" android:orientation="horizontal">
                 <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:orientation="vertical">
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="ANIMATION TIME" android:textSize="11sp" android:textStyle="bold" android:textColor="@color/text_secondary" />
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="DURATION (1–10 SECONDS)" android:textSize="11sp" android:textStyle="bold" android:textColor="@color/text_secondary" />
                     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="6dp" android:orientation="horizontal" android:gravity="center_vertical" android:background="@drawable/bg_rounded_white_10" android:padding="14dp">
                         <ImageView android:layout_width="16dp" android:layout_height="16dp" android:src="@drawable/ic_schedule" android:contentDescription="@null" />
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="8dp" android:text="5 seconds" android:textSize="14sp" android:textColor="@color/text_primary" android:id="@+id/tvDuration" />
+                        <EditText android:layout_width="match_parent" android:layout_height="wrap_content" android:text="5" android:inputType="number" android:maxLength="2" android:minHeight="48dp" android:textSize="14sp" android:textColor="@color/text_primary" android:id="@+id/etDuration" />
                     </LinearLayout>
                 </LinearLayout>
                 <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:layout_marginStart="12dp" android:orientation="vertical">
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="TARGET" android:textSize="11sp" android:textStyle="bold" android:textColor="@color/text_secondary" />
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="THRUST (10–100%)" android:textSize="11sp" android:textStyle="bold" android:textColor="@color/text_secondary" />
                     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="6dp" android:orientation="horizontal" android:gravity="center_vertical" android:background="@drawable/bg_rounded_white_10" android:padding="14dp">
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Simulation only" android:textSize="14sp" android:textColor="@color/text_primary" android:id="@+id/tvTarget" />
+                        <EditText android:layout_width="match_parent" android:layout_height="wrap_content" android:text="100" android:inputType="number" android:maxLength="3" android:minHeight="48dp" android:textSize="14sp" android:textColor="@color/text_primary" android:id="@+id/etThrust" />
                     </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
@@ -49,7 +49,7 @@
                         <ImageView android:layout_width="18dp" android:layout_height="18dp" android:src="@drawable/ic_verified_user" android:contentDescription="@null" />
                         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="8dp" android:text="Pre-Deployment Check" android:textStyle="bold" android:textColor="@color/indigo" />
                     </LinearLayout>
-                    <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="6dp" android:text="Review the demo state before sending a request. A saved request is not a confirmed deployment." android:textSize="12sp" android:textColor="@color/text_secondary" />
+                    <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="6dp" android:text="Review the selected source before sending a request. Device checks are operator confirmations, not automatic sensor checks. A saved request is not a confirmed deployment." android:textSize="12sp" android:textColor="@color/text_secondary" />
                     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="12dp" android:orientation="vertical">
                         <include layout="@layout/checklist_item" android:id="@+id/check1" />
                         <include layout="@layout/checklist_item" android:id="@+id/check2" />

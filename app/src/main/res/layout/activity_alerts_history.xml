@@ -13,8 +13,9 @@
         <androidx.core.widget.NestedScrollView android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:layout_marginTop="10dp">
             <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
                 <androidx.recyclerview.widget.RecyclerView android:id="@+id/rvAlerts" android:layout_width="match_parent" android:layout_height="wrap_content" android:nestedScrollingEnabled="false" />
-                <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:gravity="center" android:text="END OF HISTORICAL RECORDS" android:textSize="11sp" android:textColor="@color/text_secondary" android:id="@+id/tvEmptyEvents" />
+                <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:gravity="center" android:text="Loading recent events…" android:textSize="11sp" android:textColor="@color/text_secondary" android:id="@+id/tvEmptyEvents" />
                 <com.google.android.material.button.MaterialButton style="@style/Widget.MaterialComponents.Button.OutlinedButton" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="12dp" android:text="Live Monitoring Data" android:textColor="@color/indigo" app:icon="@drawable/ic_open_in_new" app:iconTint="@color/indigo" app:strokeColor="@color/indigo" app:cornerRadius="10dp" android:id="@+id/btnLiveData" />
+                <Button android:id="@+id/btnFullEventHistory" android:layout_width="match_parent" android:layout_height="wrap_content" android:minHeight="48dp" android:text="Browse all event history" />
                 <View android:layout_width="match_parent" android:layout_height="12dp" />
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>

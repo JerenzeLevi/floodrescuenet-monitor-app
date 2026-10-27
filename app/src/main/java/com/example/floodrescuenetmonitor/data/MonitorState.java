@@ -13,10 +13,14 @@ import java.util.Map;
 public final class MonitorState {
     public static final long STALE_MS = 15000;
     public boolean connected;
+    public String expectedSource = "simulation";
+    public List<Map<String,Object>> todayDeployments = new ArrayList<>();
+    public boolean todayLoaded;
     public long serverOffset;
     public String error = "";
     public Map<String, Object> telemetry = Collections.emptyMap();
     public Map<String, Object> command = Collections.emptyMap();
+    public Map<String,Object> diagnostic = Collections.emptyMap();
     public List<Map<String, Object>> events = new ArrayList<>();
     public List<Map<String, Object>> readings = new ArrayList<>();
     public List<Map<String, Object>> deployments = new ArrayList<>();
@@ -51,11 +55,18 @@ public final class MonitorState {
     public double warning() { Double n = number(telemetry, "warningCm"); return n == null ? 10 : n; }
     public double danger() { Double n = number(telemetry, "dangerCm"); return n == null ? 16 : n; }
     public boolean valid() {
-        return water() != null && "simulation".equals(text(telemetry, "source", ""))
+        return water() != null && expectedSource.equals(text(telemetry, "source", ""))
+                && java.util.Arrays.asList("simulation","esp32").contains(expectedSource)
                 && Double.valueOf(1).equals(number(telemetry, "schemaVersion"))
                 && warning() > 0 && warning() < danger() && danger() <= 20
-                && java.util.Arrays.asList("ready", "deploying", "deployed").contains(net())
+                && java.util.Arrays.asList("ready", "deploying", "deployed", "retracting", "fault", "unarmed", "diagnosing").contains(net())
                 && java.util.Arrays.asList("automatic", "manual").contains(mode());
+    }
+    public boolean device() { return "esp32".equals(expectedSource); }
+    public String sourceLabel() { return device() ? "ESP32" : "DEMO"; }
+    public static long dayStart(long now) {
+        java.util.Calendar day=java.util.Calendar.getInstance(java.util.TimeZone.getTimeZone("Asia/Manila"));
+        day.setTimeInMillis(now);day.set(java.util.Calendar.HOUR_OF_DAY,0);day.set(java.util.Calendar.MINUTE,0);day.set(java.util.Calendar.SECOND,0);day.set(java.util.Calendar.MILLISECOND,0);return day.getTimeInMillis();
     }
     public String net() { return text(telemetry, "net", "unknown"); }
     public String mode() { return text(telemetry, "mode", "unknown"); }
@@ -73,14 +84,15 @@ public final class MonitorState {
         String status = text(command, "status", "");
         return ("pending".equals(status) || "accepted".equals(status)) && time(command, "expiresAt") > now;
     }
-    public boolean canRequest() { return connected && fresh() && error.isEmpty() && !pendingAt(now()); }
+    public boolean canRequest() { return connected && fresh() && (!device() || Boolean.TRUE.equals(telemetry.get("sensorReady"))) && error.isEmpty() && !pendingAt(now()); }
     public String connectionText() {
-        if (!error.isEmpty()) return "DEMO · " + error;
-        if (!connected) return "DEMO · Offline — commands unavailable";
-        if (telemetry.isEmpty()) return "DEMO · Connected; waiting for a data source";
-        if (!valid()) return "DEMO · Invalid or unsupported telemetry";
-        if (!fresh()) return "DEMO · Stale reading — last update " + date(updatedAt());
-        return "DEMO · Receiving updates · " + date(updatedAt());
+        if (!error.isEmpty()) return sourceLabel() + " · " + error;
+        if (!connected) return sourceLabel() + " · Offline — commands unavailable";
+        if (telemetry.isEmpty()) return sourceLabel() + " · Connected; waiting for a data source";
+        if (!valid()) return sourceLabel() + " · Invalid or unsupported telemetry";
+        if (!fresh()) return sourceLabel() + " · Stale reading — last update " + date(updatedAt());
+        if(device()&&!Boolean.TRUE.equals(telemetry.get("sensorReady")))return "ESP32 · Sensor calibration/setup incomplete — commands unavailable";
+        return sourceLabel() + " · Receiving updates · " + date(updatedAt());
     }
     public String commandText() {
         if (command.isEmpty()) return "No request sent";

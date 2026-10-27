@@ -31,6 +31,7 @@
         <activity android:name=".AlertsHistoryActivity" android:exported="false" android:windowSoftInputMode="adjustResize" />
         <activity android:name=".ManualDeployActivity" android:exported="false" android:windowSoftInputMode="adjustResize" />
         <activity android:name=".RecentDeploymentsActivity" android:exported="false" android:windowSoftInputMode="adjustResize" />
+        <activity android:name=".HistoryBrowserActivity" android:exported="false" />
         <activity android:name=".ProfileActivity" android:exported="false" android:windowSoftInputMode="adjustResize" />
         <activity android:name=".AdminActivity" android:exported="false" android:windowSoftInputMode="adjustResize" />
         <activity

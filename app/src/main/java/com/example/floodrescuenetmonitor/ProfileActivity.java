@@ -36,7 +36,19 @@ public class ProfileActivity extends MonitorActivity {
         findViewById(R.id.btnBack).setOnClickListener(v -> finish());
         findViewById(R.id.btnSignOut).setOnClickListener(v -> logout());
         findViewById(R.id.rowAdmin).setOnClickListener(v -> startActivity(new Intent(this, AdminActivity.class)));
-        findViewById(R.id.rowSecurity).setOnClickListener(v -> sendPasswordReset());
+        findViewById(R.id.rowSecurity).setOnClickListener(v -> new AlertDialog.Builder(this).setTitle("Security")
+            .setItems(new String[]{"Reset password","Access activity on this phone"},(d,which)->{
+                if(which==0)sendPasswordReset();else new AlertDialog.Builder(this).setTitle("Local access activity").setMessage(com.example.floodrescuenetmonitor.data.SecurityAudit.summary(this)).setPositiveButton("Close",null).show();
+            }).show());
+        findViewById(R.id.btnDataSource).setOnClickListener(v->{
+            FirebaseUser user=FirebaseAuth.getInstance().getCurrentUser();if(user==null)return;
+            boolean device=com.example.floodrescuenetmonitor.data.SessionSettings.device(this,user.getUid());
+            new AlertDialog.Builder(this).setTitle("Monitoring source")
+                .setSingleChoiceItems(new String[]{"Simulation","ESP32 device (requires provisioning)"},device?1:0,(d,which)->{
+                    com.example.floodrescuenetmonitor.data.SessionSettings.setDevice(this,user.getUid(),which==1);d.dismiss();
+                    startActivity(new Intent(this,DashboardActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK));finish();
+                }).setNegativeButton("Cancel",null).show();
+        });
         findViewById(R.id.rowHelp).setOnClickListener(v -> new AlertDialog.Builder(this)
                 .setTitle("Help & Support")
                 .setMessage("• Home shows the latest water level and net status.\n• Live shows telemetry and recent readings.\n• Alerts lists events; Deploy sends a manual request.\n• Accounts must be approved by an administrator before monitoring is available.\n\nFor account problems, contact your barangay DRRM administrator.")

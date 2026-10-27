@@ -15,7 +15,7 @@ export class DemoEngine {
   }
   get tier() { return this.water >= this.danger ? 'DANGER' : this.water >= this.warning ? 'WARNING' : 'NORMAL'; }
   event(severity, title, description, category, now, type = 'STATUS') {
-    this.outbox.push({ path: 'events/' + randomUUID(), value: { severity, title, description, category, type, timestamp: now } });
+    this.outbox.push({ path: 'events/' + randomUUID(), value: { severity, title, description, category, type, resolution: severity === 'DANGER' || severity === 'WARNING' ? 'Pending' : 'Passed', timestamp: now } });
   }
   waterLevel(value, now = Date.now()) {
     if (!Number.isFinite(value) || value < 0 || value > 20) throw Error('Use a water level from 0 to 20 cm.');
@@ -26,8 +26,8 @@ export class DemoEngine {
   automatic(now) { if (this.mode === 'automatic' && this.tier === 'DANGER' && this.net === 'ready') this.deploy(null, now); }
   deploy(command, now) {
     this.net = 'deploying'; this.lastActivityAt = now;
-    this.deployment = { id: command?.id || randomUUID(), start: now, command };
-    this.event('SYSTEM', 'Demo deployment started', 'Waiting for the five-second demonstration to complete.', 'Net Deployments', now);
+    this.deployment = { id: command?.id || randomUUID(), start: now, command, durationMs: command?.durationMs ?? 5000, thrustPercent: command?.thrustPercent ?? 100 };
+    this.event('SYSTEM', 'Demo deployment started', `Simulated drive for ${this.deployment.durationMs / 1000}s at ${this.deployment.thrustPercent}% commanded power; no physical thrust is measured.`, 'Net Deployments', now);
   }
   accept(command, uid, now = Date.now()) {
     if (!command || command.status !== 'pending' || this.seen.has(command.id)) return false;
@@ -41,20 +41,24 @@ export class DemoEngine {
     if (!['DEPLOY','SET_MODE','DIAGNOSTIC'].includes(command.type)) error = 'Unsupported request';
     if (typeof command.location !== 'string' || !command.location.trim() || command.location.length > 80) error = 'Invalid demo location';
     if (!['automatic','manual'].includes(command.mode)) error = 'Invalid mode';
+    if (command.durationMs !== undefined && (!Number.isInteger(command.durationMs) || command.durationMs < 1000 || command.durationMs > 10000)) error = 'Duration must be 1000–10000 ms';
+    if (command.thrustPercent !== undefined && (!Number.isInteger(command.thrustPercent) || command.thrustPercent < 10 || command.thrustPercent > 100)) error = 'Thrust must be 10–100%';
     if (command.type === 'DEPLOY' && this.net !== 'ready') error = 'Demo net is not ready; a manual repack is required';
     if (error) {
       this.ack(command, 'failed', error, now);
       if (command.type === 'DEPLOY') this.failedDeployment(command, error, now);
       return true;
     }
-    if (command.type === 'DEPLOY') { this.ack(command,'accepted','Five-second demo started',now);this.deploy(command,now); }
+    if (command.type === 'DEPLOY') { this.ack(command,'accepted','Configured demo started',now);this.deploy(command,now); }
     else if (command.type === 'SET_MODE') {
       this.mode = command.mode;this.lastActivityAt = now;
       this.ack(command,'completed','Demo mode is now '+this.mode,now);
       this.event('SYSTEM','Mode changed',this.mode,'System',now);this.automatic(now);
     } else {
       this.ack(command,'completed','Demo heartbeat and state passed; hardware not tested',now);
-      this.event('SYSTEM','Demo diagnostic completed','Data feeder and state machine responded. No sensor or motor self-test was performed.','System',now,'DIAGNOSTIC');
+      const diagnostic={severity:'SYSTEM',title:'Demo diagnostic completed',description:'Data feeder and state machine responded. No sensor or motor self-test was performed.',category:'System',timestamp:now,type:'DIAGNOSTIC',resolution:'Passed'};
+      this.outbox.push({path:'diagnostic',value:diagnostic});
+      this.event('SYSTEM',diagnostic.title,diagnostic.description,'System',now,'DIAGNOSTIC');
     }
     return true;
   }
@@ -67,16 +71,16 @@ export class DemoEngine {
     if (command.expiresAt > now) this.ack(command,'failed','Demo feeder restarted; send a fresh request after it connects',now);
   }
   failedDeployment(command, error, now) {
-    this.outbox.push({ path:'deployments/'+command.id, value:{timestamp:now,location:command.location || 'Tabletop demo',initiator:'Manual',status:'Failed',error} });
+    this.outbox.push({ path:'deployments/'+command.id, value:{timestamp:now,location:command.location || 'Tabletop demo',initiator:'Manual',status:'Failed',unitId:'SIM-01',error} });
     this.event('WARNING','Demo request did not complete',error,'Net Deployments',now);
   }
   tick(now = Date.now()) {
     this.automatic(now);
-    if (this.deployment && now - this.deployment.start >= 5000) {
+    if (this.deployment && now - this.deployment.start >= this.deployment.durationMs) {
       const d = this.deployment;
       this.net = 'deployed';this.lastActivityAt = now;this.deployment = null;
       if (d.command && d.command.expiresAt > now) this.ack(d.command,'completed','Simulated net deployed',now);
-      this.outbox.push({ path:'deployments/'+d.id, value:{timestamp:now,location:d.command?.location||'Tabletop demo',initiator:d.command?'Manual':'System',status:'Success',cycleMs:5000} });
+      this.outbox.push({ path:'deployments/'+d.id, value:{timestamp:now,location:d.command?.location||'Tabletop demo',initiator:d.command?'Manual':'System',status:'Success',unitId:'SIM-01',cycleMs:d.durationMs,thrustPercent:d.thrustPercent} });
       this.event('DEPLOYED','Simulated net deployed','The demo completed; reset represents manual repacking.','Net Deployments',now);
     }
   }
@@ -90,7 +94,7 @@ export class DemoEngine {
     this.event('SYSTEM','Demo manually repacked','Water returned to 4 cm and the simulated net is ready.','System',now);
   }
   telemetry(now = Date.now()) {
-    return {schemaVersion:1,source:'simulation',waterCm:this.water,warningCm:this.warning,dangerCm:this.danger,net:this.net,mode:this.mode,updatedAt:now,lastActivityAt:this.lastActivityAt};
+    return {schemaVersion:1,source:'simulation',unitId:'SIM-01',motorPowerPercent:this.deployment?.thrustPercent || 0,waterCm:this.water,warningCm:this.warning,dangerCm:this.danger,net:this.net,mode:this.mode,updatedAt:now,lastActivityAt:this.lastActivityAt};
   }
   drain() { const records = this.outbox;this.outbox = [];return records; }
 }

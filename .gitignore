@@ -14,22 +14,8 @@
 .cxx
 local.properties
 
-# Markdown notes: ignore all .md files except README.md
-*.md
-!README.md
-
-# Kotlin tooling cache
-.kotlin/
-
-# API keys, service credentials and signing assets (never commit)
-app/google-services.json
-google-services.json
-*.jks
-*.keystore
-*.p12
-*.env
-.env
-.env.*
-secrets.properties
-*.pem
-*.key
+node_modules/
+**/build/
+**/secrets.h
+*.log
+*.hprof

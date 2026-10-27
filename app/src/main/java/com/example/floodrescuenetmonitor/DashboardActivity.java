@@ -46,7 +46,7 @@ public class DashboardActivity extends MonitorActivity {
         int color = "DANGER".equals(tier) ? R.color.red_danger : "WARNING".equals(tier) ? R.color.amber_warning : "NORMAL".equals(tier) ? R.color.green_success : R.color.text_secondary;
         ((TextView)findViewById(R.id.tvMiniTier)).setTextColor(getColor(color));
         StatusPill.bind(findViewById(R.id.pillWaterLevel),tier,getColor(R.color.card_border),getColor(color));
-        StatusPill.bind(findViewById(R.id.pillNetActive),"● SIMULATION",getColor(R.color.white),getColor(R.color.green_success));
+        StatusPill.bind(findViewById(R.id.pillNetActive),"● "+s.sourceLabel(),getColor(R.color.white),getColor(R.color.green_success));
         ((WaterLevelGauge)findViewById(R.id.dashGauge)).setLevel(s.valid()?s.water():null,tier);
         ((TrendView)findViewById(R.id.trendChart)).setReadings(s.readings);
         if (previousEvents != s.events) {
@@ -54,21 +54,25 @@ public class DashboardActivity extends MonitorActivity {
             List<HistoryEntry> history = new ArrayList<>();
             for (int i=0; i<Math.min(3,s.events.size());i++) {
                 Map<String,Object> row=s.events.get(i);
-                history.add(new HistoryEntry(text(row,"title","Event"),date(time(row,"timestamp")),text(row,"severity","SYSTEM")));
+                history.add(new HistoryEntry(text(row,"title","Event"),date(time(row,"timestamp")),text(row,"resolution",text(row,"severity","SYSTEM"))));
             }
-            if(history.isEmpty()) history.add(new HistoryEntry("No events yet","Waiting for the demo data source",""));
+            if(history.isEmpty()) history.add(new HistoryEntry("No events yet","Waiting for the selected source",""));
             ((RecyclerView)findViewById(R.id.rvHistory)).setAdapter(new HistoryAdapter(history));
         }
-        label(R.id.tvSelfCheck,"No diagnostic result reported"); label(R.id.tvSelfCheckTime,"A request needs a demo response");
-        for (Map<String,Object> row:s.events) if("DIAGNOSTIC".equals(text(row,"type",""))) {
+        label(R.id.tvSelfCheck,"No diagnostic result reported"); label(R.id.tvSelfCheckTime,"A request needs a source response");
+        for (Map<String,Object> row:diagnosticRows(s)) if("DIAGNOSTIC".equals(text(row,"type",""))) {
             label(R.id.tvSelfCheck,text(row,"title","Diagnostic result"));label(R.id.tvSelfCheckTime,date(time(row,"timestamp")));break;
         }
         if(previousContacts != s.contacts) {
             previousContacts=s.contacts; List<EmergencyContact> contacts=new ArrayList<>();
             for(Map<String,Object> row:s.contacts) contacts.add(new EmergencyContact(text(row,"name","Contact"),text(row,"subtitle",""),text(row,"number","")));
-            if(contacts.isEmpty()) contacts.add(new EmergencyContact("No contacts configured","Add verified numbers to your demo session", ""));
+            if(contacts.isEmpty()) contacts.add(new EmergencyContact("No contacts configured","Add verified numbers to your session", ""));
             ((RecyclerView)findViewById(R.id.rvContacts)).setAdapter(new ContactAdapter(contacts));
         }
+    }
+    private java.util.List<Map<String,Object>> diagnosticRows(MonitorState s) {
+        if(!s.diagnostic.isEmpty())return java.util.Collections.singletonList(s.diagnostic);
+        return s.events;
     }
     private void bindLegendDot(int id,String label,int color) {
         android.view.View row=findViewById(id);

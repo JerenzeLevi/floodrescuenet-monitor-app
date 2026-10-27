@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.function.Consumer;
 
-/** Observes an authenticated user's isolated demo session; never addresses hardware. */
+/** Observes either an isolated demo or a provisioned ESP32 session. */
 public final class MonitorRepository {
     public interface Completion { void done(boolean ok, String message); }
     private final String uid;
@@ -30,23 +30,43 @@ public final class MonitorRepository {
     private boolean active;
     private boolean sending;
 
-    public MonitorRepository(String uid) {
+    public MonitorRepository(String uid) { this(uid,false); }
+    public MonitorRepository(String uid, boolean device) {
         this.uid = uid;
-        session = database.getReference("demoSessions").child(uid);
+        state.expectedSource = device ? "esp32" : "simulation";
+        session = database.getReference(device ? "deviceSessions" : "demoSessions").child(uid);
     }
     public void start(Consumer<MonitorState> listener) {
         this.listener = listener;
         active = true;
+        refreshDay();
         observe("connection", database.getReference(".info/connected"), s -> state.connected = Boolean.TRUE.equals(s.getValue()));
         observe("clock", database.getReference(".info/serverTimeOffset"), s -> {
             Object n = s.getValue(); state.serverOffset = n instanceof Number ? ((Number) n).longValue() : 0;
         });
         observe("telemetry", session.child("telemetry"), s -> state.telemetry = MonitorState.map(s.getValue()));
+        observe("diagnostic",session.child("diagnostic"),s -> state.diagnostic = MonitorState.map(s.getValue()));
         observe("command", session.child("command"), s -> state.command = MonitorState.map(s.getValue()));
         observe("events", session.child("events").orderByChild("timestamp").limitToLast(100), s -> state.events = MonitorState.sorted(s.getValue()));
         observe("readings", session.child("readings").orderByChild("timestamp").limitToLast(60), s -> state.readings = MonitorState.sorted(s.getValue()));
         observe("deployments", session.child("deployments").orderByChild("timestamp").limitToLast(100), s -> state.deployments = MonitorState.sorted(s.getValue()));
         observe("contacts", session.child("contacts").limitToFirst(20), s -> state.contacts = MonitorState.sorted(s.getValue()));
+    }
+    public DatabaseReference session() { return session; }
+    private Query todayQuery;
+    private ValueEventListener todayListener;
+    private long todayStart;
+    public void refreshDay() {
+        long start=MonitorState.dayStart(state.now());
+        if(todayListener!=null && start==todayStart)return;
+        if(todayListener!=null)todayQuery.removeEventListener(todayListener);
+        todayStart=start;state.todayLoaded=false;
+        todayQuery=session.child("deployments").orderByChild("timestamp").startAt(start).endAt(start+86400000L-1);
+        todayListener=new ValueEventListener() {
+            @Override public void onDataChange(@NonNull DataSnapshot data){if(!active)return;state.todayDeployments=MonitorState.sorted(data.getValue());state.todayLoaded=true;errors.remove("today");publish();}
+            @Override public void onCancelled(@NonNull DatabaseError error){if(!active)return;errors.put("today",error.getMessage());state.todayLoaded=false;publish();}
+        };
+        todayQuery.addValueEventListener(todayListener);
     }
     private void observe(String name, Query query, Consumer<DataSnapshot> apply) {
         ValueEventListener valueListener = new ValueEventListener() {
@@ -71,18 +91,22 @@ public final class MonitorRepository {
     }
     public void close() {
         active = false;
+        if(todayListener!=null)todayQuery.removeEventListener(todayListener);todayListener=null;
         for (Runnable remove : subscriptions) remove.run();
         subscriptions.clear();
     }
-    public void request(String type, String location, String mode, Completion completion) {
+    public void request(String type,String location,String mode,Completion completion) {
+        request(type,location,mode,new DeploymentOptions(5000,100),completion);
+    }
+    public void request(String type, String location, String mode, DeploymentOptions options, Completion completion) {
         if (!active || sending || !state.canRequest()) {
-            completion.done(false, "Wait for fresh demo data and the previous request to finish."); return;
+            completion.done(false, "Wait for fresh data and the previous request to finish."); return;
         }
         if (!java.util.Arrays.asList("DEPLOY", "SET_MODE", "DIAGNOSTIC").contains(type)) {
             completion.done(false, "Unsupported request."); return;
         }
         if ("DEPLOY".equals(type) && !"ready".equals(state.net())) {
-            completion.done(false, "The demo net is not ready. Repack it in the demo first."); return;
+            completion.done(false, "The net is not ready. Reset/repack the source first."); return;
         }
         if (location == null || location.trim().isEmpty() || location.length() > 80
                 || !java.util.Arrays.asList("automatic", "manual").contains(mode)) {
@@ -92,7 +116,8 @@ public final class MonitorRepository {
         Map<String, Object> request = new HashMap<>();
         request.put("id", UUID.randomUUID().toString());
         request.put("requestedBy", uid);
-        request.put("target", "simulation");
+        request.put("target", state.expectedSource);
+        request.put("durationMs",options.durationMs);request.put("thrustPercent",options.thrustPercent);
         request.put("type", type);
         request.put("status", "pending");
         request.put("location", location.trim());
@@ -115,7 +140,7 @@ public final class MonitorRepository {
                 sending = false;
                 if (!active) return;
                 completion.done(error == null && committed, error != null ? error.getMessage()
-                        : committed ? "Request saved. Waiting for the demo to acknowledge it."
+                        : committed ? "Request saved. Waiting for the selected source to acknowledge it."
                         : "Another request is active, or this request expired.");
             }
         }, false);

@@ -22,7 +22,7 @@ public abstract class MonitorActivity extends AppCompatActivity {
     private FirebaseAuth.AuthStateListener authListener;
     private boolean started;
     private final Runnable tick = new Runnable() {
-        @Override public void run() { if (started) { renderState(); clock.postDelayed(this, 1000); } }
+        @Override public void run() { if (started) { if(repository!=null)repository.refreshDay(); renderState(); clock.postDelayed(this, 1000); } }
     };
     @Override protected void onStart() {
         super.onStart(); started = true;
@@ -39,7 +39,7 @@ public abstract class MonitorActivity extends AppCompatActivity {
                     auth.signOut(); return;
                 }
                 if (repository == null && auth.getCurrentUser() != null) {
-                    repository = new MonitorRepository(auth.getCurrentUser().getUid());
+                    repository = new MonitorRepository(auth.getCurrentUser().getUid(), com.example.floodrescuenetmonitor.data.SessionSettings.device(thisContext(),auth.getCurrentUser().getUid()));
                     repository.start(value -> { state = value; renderState(); });
                 }
             }
@@ -74,6 +74,7 @@ public abstract class MonitorActivity extends AppCompatActivity {
         com.google.android.material.badge.BadgeDrawable badge = nav.getOrCreateBadge(R.id.nav_alerts);
         badge.setNumber(count); badge.setMaxCharacterCount(3); badge.setVisible(true);
     }
+    private android.content.Context thisContext() { return this; }
     protected abstract void onMonitorState(MonitorState state);
     protected void message(String text) { Toast.makeText(this, text, Toast.LENGTH_LONG).show(); }
     protected void logout() { FirebaseAuth.getInstance().signOut(); leave(); }
