@@ -1,3 +1,6 @@
+import java.io.File
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -6,8 +9,8 @@ plugins {
 
 // Release signing reads a local file outside the repo, so no passwords are committed.
 // If the file is missing, the release build stays unsigned.
-val releaseSigning = java.util.Properties().apply {
-    val file = java.io.File(System.getProperty("user.home"), ".android-keystores/floodrescuenet-release.properties")
+val releaseSigning = Properties().apply {
+    val file = File(System.getProperty("user.home"), ".android-keystores/floodrescuenet-release.properties")
     if (file.exists()) file.inputStream().use { load(it) }
 }
 
